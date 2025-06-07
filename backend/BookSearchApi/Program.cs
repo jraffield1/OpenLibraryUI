@@ -11,6 +11,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton(new BookSearcher(new HttpClient()));
 builder.Services.AddHealthChecks();
 
+// CORS integration for interaction with frontend
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -19,8 +30,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
+app.UseCors();
 app.MapHealthChecks("/health");
 app.MapControllers();
 app.Run();

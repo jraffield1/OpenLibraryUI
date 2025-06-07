@@ -1,3 +1,9 @@
+export interface SearchRequest {
+  title?: string;
+  author?: string;
+  subject?: string;
+}
+
 export interface BookResult {
   author_key?: string[];
   author_name?: string[];
