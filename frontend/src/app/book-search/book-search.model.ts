@@ -15,6 +15,7 @@ export interface BookResult {
   language?: string[];
   public_scan_b: boolean;
   subtitle?: string;
+  description?: string;
   title: string;
   cover_i?: number;
 }

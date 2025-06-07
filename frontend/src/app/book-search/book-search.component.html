@@ -15,7 +15,7 @@
       alt="{{ book.title }}"
       onerror="this.style.display='none'"
     />
-      <p class="description">{{ book.subtitle || 'No description available.' }}</p>
+      <p class="description">{{ book.description || 'No description available.' }}</p>
     </div>
 
     <div class="tile-details" [class.expanded]="expandedIndices.has(i)">
