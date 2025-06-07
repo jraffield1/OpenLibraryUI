@@ -40,6 +40,10 @@ public class SearchResult
 
     [JsonPropertyName("cover_i")]
     public int? CoverID { get; set; }
+
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
 }
 
 public class SearchResponse

@@ -14,7 +14,7 @@ public class BookSearcher
         _httpClient = httpClient;
     }
 
-    private static string ConstructQueryString(SearchRequest req)
+    private static string ConstructSearchURL(SearchRequest req)
     {
         var sb = new StringBuilder("https://openlibrary.org/search.json?");
 
@@ -31,14 +31,45 @@ public class BookSearcher
         return url;
     }
 
-    public async Task<SearchResponse?> SearchAsync(SearchRequest req)
+    private static string ConstructWorksURL(SearchResult book)
     {
-        string query = ConstructQueryString(req);
-        
-        var response = await _httpClient.GetAsync(query);
+        var workKey = book.Key.StartsWith("/works/") ? book.Key : $"/works/{book.Key}";
+        return $"https://openlibrary.org{workKey}.json";
+    }
+
+    public async Task<SearchResponse?> SearchAsync(SearchRequest request)
+    {
+        var response = await _httpClient.GetAsync(ConstructSearchURL(request));
         if (!response.IsSuccessStatusCode) return null;
 
         var json = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<SearchResponse>(json);
+        var queryResponse = JsonSerializer.Deserialize<SearchResponse>(json);
+
+        if (queryResponse?.Docs == null) return queryResponse;
+
+        var fetchTasks = queryResponse.Docs.Select(async book =>
+        {
+            if (string.IsNullOrEmpty(book.Key)) return;
+
+            try
+            {
+                var worksResponse = await _httpClient.GetAsync(ConstructWorksURL(book));
+                if (!worksResponse.IsSuccessStatusCode) return;
+
+                var workJson = await worksResponse.Content.ReadAsStringAsync();
+
+                var worksData = JsonSerializer.Deserialize<WorkResponse>(workJson);
+
+                book.Description = worksData?.Description?.ToString();
+            }
+            catch
+            {
+                book.Description = null;
+            }
+        });
+
+        await Task.WhenAll(fetchTasks);
+        return queryResponse;
     }
+
 }

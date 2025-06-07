@@ -37,4 +37,18 @@ public class BookSearcherLiveTests
             && doc.AuthorName != null
             && doc.AuthorName.Any(name => name.Contains("Asimov", System.StringComparison.OrdinalIgnoreCase)));
     }
+
+    [Fact]
+    public async Task Description_Exists()
+    {
+        var httpClient = new HttpClient();
+        var searcher = new BookSearcher(httpClient);
+        var query = new SearchRequest { Title = "Dune" };
+
+        var result = await searcher.SearchAsync(query);
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result.Docs);
+        Assert.True(result.Docs.First().Description?.Length > 0);
+    }
 }
