@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
 import { BookResult, BookSearchResponse } from './book-search.model';
 
 @Component({
@@ -26,9 +26,9 @@ export class BookSearchComponent {
     this.isLoading = true;
     this.error = null;
 
-    this.http.get<BookSearchResponse>('http://localhost:5074/api/search', {
-      params: { title: this.query }
-    }).subscribe({
+    const params = new HttpParams().set(this.searchType, this.query);
+
+    this.http.get<BookSearchResponse>('http://localhost:5074/api/search', {params}).subscribe({
       next: response => {
         this.results = response.docs;
         this.isLoading = false;
@@ -52,4 +52,6 @@ export class BookSearchComponent {
     if (!book.key) return '';
     return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
   }
+
+  searchType = 'title'; // default search type
 }

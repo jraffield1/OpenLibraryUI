@@ -1,8 +1,24 @@
 <header class="page-header">
   <h1>Minor Acts of Literary Espionage</h1>
   <div class="search-bar">
-    <input [(ngModel)]="query" placeholder="Search by title, author, or subject" />
-    <button (click)="search()">Search</button>
+    <div class="search-group">
+      <select [(ngModel)]="searchType">
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+        <option value="subject">Subject</option>
+      </select>
+      <input
+        type="text"
+        [(ngModel)]="query"
+        placeholder="Search"
+        (keyup.enter)="search()"
+      />
+      <button class="search-button" (click)="search()" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11 6a5 5 0 1 0-1.172 3.217l3.743 3.743a1 1 0 0 0 1.415-1.415l-3.743-3.743A5 5 0 0 0 11 6zm-1 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
 
