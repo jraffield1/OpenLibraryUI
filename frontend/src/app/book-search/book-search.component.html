@@ -7,12 +7,14 @@
         <option value="author">Author</option>
         <option value="subject">Subject</option>
       </select>
+
       <input
         type="text"
         [(ngModel)]="query"
         placeholder="Search"
         (keyup.enter)="search()"
       />
+
       <button class="search-button" (click)="search()" title="Search">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
           <path d="M11 6a5 5 0 1 0-1.172 3.217l3.743 3.743a1 1 0 0 0 1.415-1.415l-3.743-3.743A5 5 0 0 0 11 6zm-1 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
@@ -46,5 +48,11 @@
       <p><strong>Public Domain:</strong> {{ book.public_scan_b ? 'Yes' : 'No' }}</p>
       <p *ngIf="book.key"><strong>Key:</strong> {{ book.key }}</p>
     </div>
+  </div>
+
+  <div class="load-more-container" *ngIf="hasMoreResults">
+    <button (click)="loadMore()" [disabled]="isLoading">
+      Load More
+    </button>
   </div>
 </div>

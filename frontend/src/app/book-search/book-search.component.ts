@@ -18,26 +18,50 @@ export class BookSearchComponent {
   isLoading = false;
   error: string | null = null;
 
+  title = '';
+  author = '';
+  subject = '';
+  offset = 0;
+  limit = 10;
+  totalResults = 0;
+  searchType = 'title'; // default
+  hasMoreResults = false;
+
   constructor(private http: HttpClient) {}
 
   search() {
-    if (!this.query.trim()) return;
+    this.offset = 0;
+    this.results = [];
+    this.fetchResults();
+  }
 
+  loadMore() {
+    this.offset += this.limit;
+    this.fetchResults();
+  }
+
+  fetchResults() {
     this.isLoading = true;
     this.error = null;
 
-    const params = new HttpParams().set(this.searchType, this.query);
+    const params = new HttpParams()
+      .set(this.searchType, this.query)
+      .set('offset', this.offset)
+      .set('limit', this.limit);
 
-    this.http.get<BookSearchResponse>('http://localhost:5074/api/search', {params}).subscribe({
-      next: response => {
-        this.results = response.docs;
-        this.isLoading = false;
-      },
-      error: err => {
-        this.error = 'Something went wrong.';
-        this.isLoading = false;
-      }
-    });
+    this.http.get<BookSearchResponse>('http://localhost:5074/api/search', { params })
+      .subscribe({
+        next: (response) => {
+          this.results.push(...response.docs);
+          this.totalResults = response.numFound;
+          this.hasMoreResults = this.results.length < this.totalResults;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = 'An error occurred while fetching results.';
+          this.isLoading = false;
+        }
+      });
   }
 
   toggleExpand(index: number) {
@@ -52,6 +76,4 @@ export class BookSearchComponent {
     if (!book.key) return '';
     return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
   }
-
-  searchType = 'title'; // default search type
 }

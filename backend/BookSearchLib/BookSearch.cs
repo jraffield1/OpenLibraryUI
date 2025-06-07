@@ -14,21 +14,24 @@ public class BookSearcher
         _httpClient = httpClient;
     }
 
-    private static string ConstructSearchURL(SearchRequest req)
+    private static string ConstructSearchURL(SearchRequest request)
     {
-        var sb = new StringBuilder("https://openlibrary.org/search.json?");
+        var queryParams = new List<string>();
 
-        // Given the query info provided construct the multiparameter query string
-        if (!string.IsNullOrWhiteSpace(req.Title))
-            sb.Append($"title={Uri.EscapeDataString(req.Title)}&");
-        if (!string.IsNullOrWhiteSpace(req.Author))
-            sb.Append($"author={Uri.EscapeDataString(req.Author)}&");
-        if (!string.IsNullOrWhiteSpace(req.Subject))
-            sb.Append($"subject={Uri.EscapeDataString(req.Subject)}&");
+        if (!string.IsNullOrWhiteSpace(request.Title))
+            queryParams.Add($"title={Uri.EscapeDataString(request.Title)}");
 
-        var url = sb.ToString().TrimEnd('&');
+        if (!string.IsNullOrWhiteSpace(request.Author))
+            queryParams.Add($"author={Uri.EscapeDataString(request.Author)}");
 
-        return url;
+        if (!string.IsNullOrWhiteSpace(request.Subject))
+            queryParams.Add($"subject={Uri.EscapeDataString(request.Subject)}");
+
+        queryParams.Add($"limit={request.Limit}");
+        queryParams.Add($"offset={request.Offset}");
+
+        var queryString = string.Join("&", queryParams);
+        return $"https://openlibrary.org/search.json?{queryString}";
     }
 
     private static string ConstructWorksURL(SearchResult book)

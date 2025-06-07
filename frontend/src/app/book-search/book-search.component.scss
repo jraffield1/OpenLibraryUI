@@ -126,3 +126,24 @@
     }
   }
 }
+
+.load-more-entry {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.load-more-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #555;
+  }
+}
