@@ -1,0 +1,22 @@
+<header class="page-header">
+  <h1>Minor Acts of Literary Espionage</h1>
+  <div class="search-bar">
+    <input [(ngModel)]="query" placeholder="Search by title, author, or subject" />
+    <button (click)="search()">Search</button>
+  </div>
+</header>
+
+<div class="results-grid" *ngIf="results.length">
+  <div *ngFor="let book of results; let i = index" class="book-tile">
+    <div class="card" (click)="toggleExpand(i)">
+      <img [src]="book.cover" alt="{{ book.title }}" />
+      <p class="description">{{ book.description }}</p>
+    </div>
+
+    <div class="tile-details" [class.expanded]="expandedIndices.has(i)">
+      <h3>{{ book.title }}</h3>
+      <p class="author">Author: {{ book.author }}</p>
+      <p class="year">Published: {{ book.year }}</p>
+    </div>
+  </div>
+</div>

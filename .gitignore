@@ -14,3 +14,12 @@ backend/obj/
 **/obj/
 bin/
 obj/
+npm-debug.log
+yarn-error.log
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
