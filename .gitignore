@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.angular/
+.env
+*.log
+.vscode/
+*.sourcemap
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+backend/bin/
+backend/obj/
