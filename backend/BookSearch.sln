@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookSearchApi", "BookSearch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookSearchLib", "BookSearchLib\BookSearchLib.csproj", "{837501E1-F9F4-4619-8420-379477A253E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookSearchLib.Tests", "..\BookSearchLib.Tests\BookSearchLib.Tests.csproj", "{F3603D82-470D-40C9-A775-74C065163C1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{837501E1-F9F4-4619-8420-379477A253E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{837501E1-F9F4-4619-8420-379477A253E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{837501E1-F9F4-4619-8420-379477A253E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3603D82-470D-40C9-A775-74C065163C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3603D82-470D-40C9-A775-74C065163C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3603D82-470D-40C9-A775-74C065163C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3603D82-470D-40C9-A775-74C065163C1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
