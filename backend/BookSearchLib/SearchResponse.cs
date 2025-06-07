@@ -15,6 +15,7 @@ public class SearchResult
     public string Title { get; set; } = "";
 }
 
+// Open Library Search API response model https://openlibrary.org/dev/docs/api/search
 public class SearchResponse
 {
     public int Start { get; set; }

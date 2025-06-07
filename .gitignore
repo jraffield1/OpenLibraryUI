@@ -10,3 +10,7 @@ dist/
 Thumbs.db
 backend/bin/
 backend/obj/
+**/bin/
+**/obj/
+bin/
+obj/
