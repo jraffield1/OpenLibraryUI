@@ -37,6 +37,9 @@ public class SearchResult
 
     [JsonPropertyName("title")]
     public string Title { get; set; } = "";
+
+    [JsonPropertyName("cover_i")]
+    public int? CoverID { get; set; }
 }
 
 public class SearchResponse

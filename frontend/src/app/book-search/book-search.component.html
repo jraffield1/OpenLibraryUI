@@ -9,14 +9,25 @@
 <div class="results-grid" *ngIf="results.length">
   <div *ngFor="let book of results; let i = index" class="book-tile">
     <div class="card" (click)="toggleExpand(i)">
-      <img [src]="book.cover" alt="{{ book.title }}" />
-      <p class="description">{{ book.description }}</p>
+      <!-- Book cover image (mocked using Open Library's cover API with key fallback) -->
+      <img
+      [src]="getCoverUrl(book)"
+      alt="{{ book.title }}"
+      onerror="this.style.display='none'"
+    />
+      <p class="description">{{ book.subtitle || 'No description available.' }}</p>
     </div>
 
     <div class="tile-details" [class.expanded]="expandedIndices.has(i)">
       <h3>{{ book.title }}</h3>
-      <p class="author">Author: {{ book.author }}</p>
-      <p class="year">Published: {{ book.year }}</p>
+      <p *ngIf="book.author_name"><strong>Authors:</strong> {{ book.author_name.join(', ') }}</p>
+      <p *ngIf="book.first_publish_year"><strong>First Published:</strong> {{ book.first_publish_year }}</p>
+      <p *ngIf="book.edition_count"><strong>Edition Count:</strong> {{ book.edition_count }}</p>
+      <p *ngIf="book.language"><strong>Languages:</strong> {{ book.language.join(', ') }}</p>
+      <p *ngIf="book.ebook_access"><strong>eBook Access:</strong> {{ book.ebook_access }}</p>
+      <p><strong>Has Full Text:</strong> {{ book.has_fulltext ? 'Yes' : 'No' }}</p>
+      <p><strong>Public Domain:</strong> {{ book.public_scan_b ? 'Yes' : 'No' }}</p>
+      <p *ngIf="book.key"><strong>Key:</strong> {{ book.key }}</p>
     </div>
   </div>
 </div>

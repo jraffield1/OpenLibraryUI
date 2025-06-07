@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BookResult } from './book-search.model';
 
 @Component({
   selector: 'app-book-search',
@@ -11,136 +12,52 @@ import { FormsModule } from '@angular/forms';
 })
 export class BookSearchComponent {
   query = '';
-  results: any[] = [];
+  results: BookResult[] = [];
   expandedIndices = new Set<number>();
 
   search() {
     this.results = [
       {
         title: 'The Hobbit',
-        author: 'J.R.R. Tolkien',
-        year: 1937,
-        cover: 'https://covers.openlibrary.org/b/id/6979861-M.jpg',
-        description: 'A hobbit goes on a reluctant adventure. Dragons may be involved.'
+        author_key: ['OL26320A'],
+        author_name: ['J.R.R. Tolkien'],
+        ebook_access: 'borrowable',
+        edition_count: 45,
+        first_publish_year: 1937,
+        has_fulltext: true,
+        key: '/works/OL51904W',
+        language: ['eng'],
+        public_scan_b: true,
+        subtitle: 'There and Back Again',
+        cover_id: 2421405
       },
       {
         title: 'Dune',
-        author: 'Frank Herbert',
-        year: 1965,
-        cover: 'https://covers.openlibrary.org/b/id/8081536-M.jpg',
-        description: 'Epic sci-fi about power, prophecy, and a lot of sand.'
+        author_key: ['OL2162283A'],
+        author_name: ['Frank Herbert'],
+        ebook_access: 'full',
+        edition_count: 67,
+        first_publish_year: 1965,
+        has_fulltext: true,
+        key: '/works/OL262758W',
+        language: ['eng'],
+        public_scan_b: false,
+        subtitle: 'Science Fiction Masterpiece',
+        cover_id: 2421405
       },
       {
         title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
-      },
-      {
-        title: 'Foundation',
-        author: 'Isaac Asimov',
-        year: 1951,
-        cover: 'https://covers.openlibrary.org/b/id/7222246-M.jpg',
-        description: 'A mathematician predicts the fall of the empire. Hijinks ensue.'
+        author_key: ['OL2622837A'],
+        author_name: ['Isaac Asimov'],
+        ebook_access: 'no_ebook',
+        edition_count: 53,
+        first_publish_year: 1951,
+        has_fulltext: true,
+        key: '/works/OL45804W',
+        language: ['eng'],
+        public_scan_b: false,
+        subtitle: 'Part I of the Foundation Trilogy',
+        cover_id: 2421405
       }
     ];
   }
@@ -151,5 +68,10 @@ export class BookSearchComponent {
     } else {
       this.expandedIndices.add(index);
     }
+  }
+
+  getCoverUrl(book: BookResult): string {
+    if (!book.key) return '';
+    return `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`;
   }
 }
