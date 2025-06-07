@@ -50,6 +50,6 @@ export class BookSearchComponent {
 
   getCoverUrl(book: BookResult): string {
     if (!book.key) return '';
-    return `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`;
+    return `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`;
   }
 }

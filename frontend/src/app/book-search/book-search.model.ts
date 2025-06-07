@@ -16,7 +16,7 @@ export interface BookResult {
   public_scan_b: boolean;
   subtitle?: string;
   title: string;
-  cover_id?: number;
+  cover_i?: number;
 }
 
 export interface BookSearchResponse {
