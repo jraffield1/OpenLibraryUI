@@ -24,35 +24,57 @@
   </div>
 </header>
 
-<div class="book-list" *ngIf="results.length">
-  <div *ngFor="let book of results; let i = index" class="book-entry">
-    <div class="book-main" (click)="toggleExpand(i)">
-      <img class="book-cover" [src]="getCoverUrl(book)" alt="{{ book.title }}" />
-      <div class="book-info">
+<div class="container">
+  <div class="book-list">
+    <div *ngFor="let book of results; let i = index" class="book-entry">
+      <div class="book-main" (click)="toggleExpand(i)">
+        <img class="book-cover" [src]="getCoverUrl(book)" alt="{{ book.title }}" />
+        <div class="book-info">
         <h2>{{ book.title }}</h2>
         <p class="description">{{ book.description || 'No description available.' }}</p>
+        <div class="book-actions">
         <button class="expand-button">
           {{ expandedIndices.has(i) ? 'Hide Details' : 'Expand' }}
         </button>
+
+        <button
+        class="to-read-button"
+        *ngIf="!isInToReadList(book)"
+        (click)="addToReadList(book); $event.stopPropagation()"
+      >
+        + To-Read
+      </button>
+      </div>
+      </div>
+      </div>
+
+      <div class="book-details" *ngIf="expandedIndices.has(i)">
+        <p *ngIf="book.subtitle"><strong>Subtitle:</strong> {{ book.subtitle }}</p>
+        <p *ngIf="book.author_name"><strong>Authors:</strong> {{ book.author_name.join(', ') }}</p>
+        <p *ngIf="book.first_publish_year"><strong>First Published:</strong> {{ book.first_publish_year }}</p>
+        <p *ngIf="book.edition_count"><strong>Edition Count:</strong> {{ book.edition_count }}</p>
+        <p *ngIf="book.language"><strong>Languages:</strong> {{ book.language.join(', ') }}</p>
+        <p *ngIf="book.ebook_access"><strong>eBook Access:</strong> {{ book.ebook_access }}</p>
+        <p><strong>Has Full Text:</strong> {{ book.has_fulltext ? 'Yes' : 'No' }}</p>
+        <p><strong>Public Domain:</strong> {{ book.public_scan_b ? 'Yes' : 'No' }}</p>
+        <p *ngIf="book.key"><strong>Key:</strong> {{ book.key }}</p>
       </div>
     </div>
 
-    <div class="book-details" *ngIf="expandedIndices.has(i)">
-      <p *ngIf="book.subtitle"><strong>Subtitle:</strong> {{ book.subtitle }}</p>
-      <p *ngIf="book.author_name"><strong>Authors:</strong> {{ book.author_name.join(', ') }}</p>
-      <p *ngIf="book.first_publish_year"><strong>First Published:</strong> {{ book.first_publish_year }}</p>
-      <p *ngIf="book.edition_count"><strong>Edition Count:</strong> {{ book.edition_count }}</p>
-      <p *ngIf="book.language"><strong>Languages:</strong> {{ book.language.join(', ') }}</p>
-      <p *ngIf="book.ebook_access"><strong>eBook Access:</strong> {{ book.ebook_access }}</p>
-      <p><strong>Has Full Text:</strong> {{ book.has_fulltext ? 'Yes' : 'No' }}</p>
-      <p><strong>Public Domain:</strong> {{ book.public_scan_b ? 'Yes' : 'No' }}</p>
-      <p *ngIf="book.key"><strong>Key:</strong> {{ book.key }}</p>
+    <div class="load-more-container" *ngIf="hasMoreResults">
+      <button (click)="loadMore()" [disabled]="isLoading">
+        Load More
+      </button>
     </div>
   </div>
 
-  <div class="load-more-container" *ngIf="hasMoreResults">
-    <button (click)="loadMore()" [disabled]="isLoading">
-      Load More
-    </button>
-  </div>
+  <aside class="to-read-sidebar">
+    <h3>📚 To-Read List</h3>
+    <ul>
+      <li *ngFor="let book of toReadList">
+        <span>{{ book.title }}</span>
+        <button (click)="removeFromReadList(book)">✖</button>
+      </li>
+    </ul>
+  </aside>
 </div>

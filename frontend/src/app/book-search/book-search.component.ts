@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
@@ -11,7 +11,7 @@ import { BookResult, BookSearchResponse } from './book-search.model';
   templateUrl: './book-search.component.html',
   styleUrl: './book-search.component.scss'
 })
-export class BookSearchComponent {
+export class BookSearchComponent implements OnInit {
   query = '';
   results: BookResult[] = [];
   expandedIndices = new Set<number>();
@@ -27,7 +27,13 @@ export class BookSearchComponent {
   searchType = 'title'; // default
   hasMoreResults = false;
 
+  toReadList: BookResult[] = [];
+
   constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.loadToReadList();
+  }
 
   search() {
     this.offset = 0;
@@ -57,7 +63,7 @@ export class BookSearchComponent {
           this.hasMoreResults = this.results.length < this.totalResults;
           this.isLoading = false;
         },
-        error: (err) => {
+        error: () => {
           this.error = 'An error occurred while fetching results.';
           this.isLoading = false;
         }
@@ -75,5 +81,32 @@ export class BookSearchComponent {
   getCoverUrl(book: BookResult): string {
     if (!book.key) return '';
     return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+  }
+
+  addToReadList(book: BookResult) {
+    if (!this.toReadList.find(b => b.key === book.key)) {
+      this.toReadList.push(book);
+      this.saveToReadList();
+    }
+  }
+
+  removeFromReadList(book: BookResult) {
+    this.toReadList = this.toReadList.filter(b => b.key !== book.key);
+    this.saveToReadList();
+  }
+
+  saveToReadList() {
+    localStorage.setItem('toReadList', JSON.stringify(this.toReadList));
+  }
+
+  loadToReadList() {
+    const saved = localStorage.getItem('toReadList');
+    if (saved) {
+      this.toReadList = JSON.parse(saved);
+    }
+  }
+
+  isInToReadList(book: BookResult): boolean {
+    return this.toReadList.some(b => b.key === book.key);
   }
 }
