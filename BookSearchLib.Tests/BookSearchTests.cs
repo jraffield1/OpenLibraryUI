@@ -1,5 +1,6 @@
 using BookSearchLib;
 using BookSearchLib.Models;
+using Xunit;
 
 namespace BookSearchLib.Tests;
 
