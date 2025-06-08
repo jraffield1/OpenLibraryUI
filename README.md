@@ -29,7 +29,7 @@ docker compose up --build
 ```
 
 - Frontend: [http://localhost:4200/index.html](http://localhost:4200/index.html)
-- Backend API: [http://localhost:5000/api/search](http://localhost:5000/api/search)
+- Backend API: [http://localhost:5074/api/search](http://localhost:5074/api/search)
 
 ---
 
@@ -40,7 +40,6 @@ docker compose up --build
 ├── backend/
 │   ├── BookSearchApi/         # ASP.NET Core Web API
 │   ├── BookSearchLib/         # DTOs and shared models
-│   ├── Tests/                 # C# unit tests for backend
 │   └── Dockerfile             # Backend Docker config
 │
 ├── frontend/
