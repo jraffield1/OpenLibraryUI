@@ -30,7 +30,7 @@ docker compose up --build
 
 - Frontend: [http://localhost:4200/index.html](http://localhost:4200/index.html)
 - Backend API: [http://localhost:5074/api/search](http://localhost:5074/api/search)
-- Dev Swagger API: [http://localhost:5074/swagger/index.html]
+- Dev Swagger API: [http://localhost:5074/swagger/index.html](http://localhost:5074/swagger/index.html)
 
 ---
 
