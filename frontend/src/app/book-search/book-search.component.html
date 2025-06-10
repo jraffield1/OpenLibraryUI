@@ -52,7 +52,6 @@
             <button class="expand-button">
               {{ expandedIndices.has(i) ? 'Hide Details' : 'Expand' }}
             </button>
-
             <button
               class="to-read-button"
               *ngIf="!isInToReadList(book)"
@@ -88,9 +87,14 @@
   <aside class="to-read-sidebar">
     <h3>📚 To-Read List</h3>
     <ul>
-      <li *ngFor="let book of toReadList">
-        <span>{{ book.title }}</span>
-        <button (click)="removeFromReadList(book)">✖</button>
+      <li *ngFor="let book of toReadList" class="to-read-entry">
+        <img
+          class="to-read-cover"
+          [src]="getCoverUrl(book)"
+          alt="{{ book.title }} Cover"
+        />
+        <span class="to-read-title">{{ book.title }}</span>
+        <button class="remove-button" (click)="removeFromReadList(book)">✖</button>
       </li>
     </ul>
   </aside>
