@@ -52,6 +52,7 @@
             <button class="expand-button">
               {{ expandedIndices.has(i) ? 'Hide Details' : 'Expand' }}
             </button>
+
             <button
               class="to-read-button"
               *ngIf="!isInToReadList(book)"
@@ -76,8 +77,8 @@
       </div>
     </div>
 
-    <!-- Load More -->
-    <div class="load-more-container" *ngIf="hasMoreResults">
+    <!-- Load More (only if there are more results and not a no-results state) -->
+    <div class="load-more-container" *ngIf="hasMoreResults && !noResults">
       <button (click)="loadMore()" [disabled]="isLoading">
         Load More
       </button>
