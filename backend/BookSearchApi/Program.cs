@@ -2,16 +2,25 @@ using BookSearchLib;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register all MVC Controllers
-builder.Services.AddControllers();
+// Logging Configuration
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
 
-// Add services to the container.
+// Service Registration
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton(new BookSearcher(new HttpClient()));
+
+// Register BookSearcher as a typed HttpClient —
+builder.Services
+    .AddHttpClient<BookSearcher>()
+    .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
 builder.Services.AddHealthChecks();
 
-// CORS integration for interaction with frontend
+// CORS for your Angular front-end
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -24,10 +33,13 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Set up middleware pipeline
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors();
+
 app.MapHealthChecks("/health");
 app.MapControllers();
+
 app.Run();
