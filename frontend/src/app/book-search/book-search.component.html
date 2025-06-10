@@ -26,26 +26,41 @@
 
 <div class="container">
   <div class="book-list">
+    <!-- Error Message -->
+    <div *ngIf="error" class="message error-message">
+      {{ error }}
+    </div>
+
+    <!-- No Results Message -->
+    <div *ngIf="noResults" class="message no-results">
+      No results found.
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" class="message loading-message">
+      Loading...
+    </div>
+
+    <!-- Book Entries -->
     <div *ngFor="let book of results; let i = index" class="book-entry">
       <div class="book-main" (click)="toggleExpand(i)">
         <img class="book-cover" [src]="getCoverUrl(book)" alt="{{ book.title }}" />
         <div class="book-info">
-        <h2>{{ book.title }}</h2>
-        <p class="description">{{ book.description || 'No description available.' }}</p>
-        <div class="book-actions">
-        <button class="expand-button">
-          {{ expandedIndices.has(i) ? 'Hide Details' : 'Expand' }}
-        </button>
-
-        <button
-        class="to-read-button"
-        *ngIf="!isInToReadList(book)"
-        (click)="addToReadList(book); $event.stopPropagation()"
-      >
-        + To-Read
-      </button>
-      </div>
-      </div>
+          <h2>{{ book.title }}</h2>
+          <p class="description">{{ book.description || 'No description available.' }}</p>
+          <div class="book-actions">
+            <button class="expand-button">
+              {{ expandedIndices.has(i) ? 'Hide Details' : 'Expand' }}
+            </button>
+            <button
+              class="to-read-button"
+              *ngIf="!isInToReadList(book)"
+              (click)="addToReadList(book); $event.stopPropagation()"
+            >
+              + To-Read
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="book-details" *ngIf="expandedIndices.has(i)">
@@ -61,6 +76,7 @@
       </div>
     </div>
 
+    <!-- Load More -->
     <div class="load-more-container" *ngIf="hasMoreResults">
       <button (click)="loadMore()" [disabled]="isLoading">
         Load More
