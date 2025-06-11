@@ -1,8 +1,8 @@
 <header class="page-header">
   <h1>Minor Acts of Literary Espionage</h1>
   <div class="search-bar">
-    <div class="search-group">
-      <select [(ngModel)]="searchType">
+    <form [formGroup]="searchForm" (ngSubmit)="search()" class="search-group">
+      <select formControlName="searchType">
         <option value="title">Title</option>
         <option value="author">Author</option>
         <option value="subject">Subject</option>
@@ -10,17 +10,16 @@
 
       <input
         type="text"
-        [(ngModel)]="query"
+        formControlName="query"
         placeholder="Search"
-        (keyup.enter)="search()"
       />
 
-      <button class="search-button" (click)="search()" title="Search">
+      <button class="search-button" type="submit" title="Search">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
           <path d="M11 6a5 5 0 1 0-1.172 3.217l3.743 3.743a1 1 0 0 0 1.415-1.415l-3.743-3.743A5 5 0 0 0 11 6zm-1 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
         </svg>
       </button>
-    </div>
+    </form>
   </div>
 </header>
 
@@ -42,7 +41,7 @@
     </div>
 
     <!-- Book Entries -->
-    <div *ngFor="let book of results; let i = index" class="book-entry">
+    <div *ngFor="let book of results; let i = index; trackBy: trackByBookKey" class="book-entry">
       <div class="book-main" (click)="toggleExpand(i)">
         <img class="book-cover" [src]="getCoverUrl(book)" alt="{{ book.title }}" />
         <div class="book-info">

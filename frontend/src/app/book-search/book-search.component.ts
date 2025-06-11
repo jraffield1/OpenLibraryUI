@@ -1,101 +1,82 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpClientModule,
-  HttpParams
-} from '@angular/common/http';
-import { BookResult, BookSearchResponse } from './book-search.model';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BookSearchService } from './book-search.service';
+import { BookResult } from './book-search.model';
 
 @Component({
   selector: 'app-book-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './book-search.component.html',
   styleUrls: ['./book-search.component.scss']
 })
 export class BookSearchComponent implements OnInit {
-  query = '';
+  searchForm: FormGroup;
   results: BookResult[] = [];
   expandedIndices = new Set<number>();
   isLoading = false;
   error: string | null = null;
   noResults = false;
 
-  // paging + filtering
   offset = 0;
   limit = 10;
   totalResults = 0;
-  searchType: 'title' | 'author' | 'subject' = 'title';
   hasMoreResults = false;
 
-  // “To‐read” list
   toReadList: BookResult[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private fb: FormBuilder, private bookService: BookSearchService) {
+    this.searchForm = this.fb.group({
+      searchType: ['title'],
+      query: ['']
+    });
+  }
 
   ngOnInit() {
     this.loadToReadList();
   }
 
-  /** Kick off a fresh search */
-  search() {
+  search(): void {
     this.offset = 0;
     this.results = [];
     this.fetchResults();
   }
 
-  /** Load the next page */
-  loadMore() {
+  loadMore(): void {
     this.offset += this.limit;
     this.fetchResults();
   }
 
-  private fetchResults() {
-    // reset status
+  private fetchResults(): void {
+    const { query, searchType } = this.searchForm.value;
     this.isLoading = true;
     this.error = null;
     this.noResults = false;
 
-    const params = new HttpParams()
-      .set(this.searchType, this.query.trim())
-      .set('offset', this.offset.toString())
-      .set('limit', this.limit.toString());
-
-    this.http
-      .get<BookSearchResponse>('http://localhost:5074/api/search', { params })
-      .subscribe({
-        next: (response) => {
-          // 200 but empty set → “no results”
-          if (!response.docs || response.docs.length === 0) {
-            this.noResults = true;
-          } else {
-            this.results.push(...response.docs);
-            this.totalResults = response.numFound;
-            this.hasMoreResults = this.results.length < this.totalResults;
-          }
-          this.isLoading = false;
-        },
-        error: (err: HttpErrorResponse) => {
-          this.isLoading = false;
-          if (err.status === 404) {
-            // backend says “no books found”
-            this.noResults = true;
-          } else {
-            this.error = 'An error occurred while fetching results.';
-          }
+    this.bookService.search(query.trim(), searchType, this.offset, this.limit).subscribe({
+      next: (response) => {
+        if (!response.docs || response.docs.length === 0) {
+          this.noResults = true;
+        } else {
+          this.results.push(...response.docs);
+          this.totalResults = response.numFound;
+          this.hasMoreResults = this.results.length < this.totalResults;
         }
-      });
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.error = 'An error occurred while fetching results.';
+      }
+    });
   }
 
-  toggleExpand(index: number) {
-    if (this.expandedIndices.has(index)) {
-      this.expandedIndices.delete(index);
-    } else {
-      this.expandedIndices.add(index);
-    }
+  toggleExpand(index: number): void {
+    this.expandedIndices.has(index)
+      ? this.expandedIndices.delete(index)
+      : this.expandedIndices.add(index);
   }
 
   getCoverUrl(book: BookResult): string {
@@ -104,23 +85,23 @@ export class BookSearchComponent implements OnInit {
       : '';
   }
 
-  addToReadList(book: BookResult) {
-    if (!this.toReadList.find((b) => b.key === book.key)) {
+  addToReadList(book: BookResult): void {
+    if (!this.toReadList.some((b) => b.key === book.key)) {
       this.toReadList.push(book);
       this.saveToReadList();
     }
   }
 
-  removeFromReadList(book: BookResult) {
+  removeFromReadList(book: BookResult): void {
     this.toReadList = this.toReadList.filter((b) => b.key !== book.key);
     this.saveToReadList();
   }
 
-  private saveToReadList() {
+  private saveToReadList(): void {
     localStorage.setItem('toReadList', JSON.stringify(this.toReadList));
   }
 
-  private loadToReadList() {
+  private loadToReadList(): void {
     const saved = localStorage.getItem('toReadList');
     if (saved) {
       this.toReadList = JSON.parse(saved);
@@ -129,5 +110,9 @@ export class BookSearchComponent implements OnInit {
 
   isInToReadList(book: BookResult): boolean {
     return this.toReadList.some((b) => b.key === book.key);
+  }
+
+  trackByBookKey(index: number, book: BookResult): string {
+    return book.key ?? index.toString();
   }
 }
