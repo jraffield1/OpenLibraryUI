@@ -9,7 +9,7 @@ A full-stack web application for searching books using the Open Library API. Ent
 | Layer     | Tech                            |
 |-----------|---------------------------------|
 | Frontend  | Angular                         |
-| Backend   | ASP.NET Core Web API (C#)       |
+| Backend   | .NET Web API (C#)               |
 | External  | Open Library Search & Works API |
 | DevOps    | Docker + Docker Compose         |
 
