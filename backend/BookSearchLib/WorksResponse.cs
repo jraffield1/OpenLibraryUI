@@ -1,9 +1,11 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 public class WorkResponse
 {
     public string Title { get; set; } = "";
     public string Key { get; set; } = "";
+    [JsonConverter(typeof(DescriptionFieldConverter))]
     public string? Description { get; set; }
     public List<int>? Covers { get; set; }
     public List<string>? SubjectPlaces { get; set; }
@@ -39,4 +41,32 @@ public class AuthorRef
 public class WorkTypeInfo
 {
     public string? Key { get; set; }
+}
+
+public class DescriptionFieldConverter : JsonConverter<string?>
+{
+    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            return reader.GetString();
+        }
+
+        if (reader.TokenType == JsonTokenType.StartObject)
+        {
+            using var doc = JsonDocument.ParseValue(ref reader);
+            if (doc.RootElement.TryGetProperty("value", out var valueProp) &&
+                valueProp.ValueKind == JsonValueKind.String)
+            {
+                return valueProp.GetString();
+            }
+        }
+
+        return null;
+    }
+
+    public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value);
+    }
 }
