@@ -1,3 +1,4 @@
+using System.Text.Json;
 using BookSearchLib;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,11 @@ builder.Logging.AddDebug();
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Service Registration
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -18,9 +23,10 @@ builder.Services
     .AddHttpClient<BookSearcher>()
     .SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
+
 builder.Services.AddHealthChecks();
 
-// CORS for your Angular front-end
+// CORS for front-end service
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

@@ -30,7 +30,7 @@ namespace BookSearchLib
             HttpResponseMessage response;
             try
             {
-                response = await _httpClient.GetAsync(searchUrl, token);
+                response = await _httpClient.GetAsync(searchUrl);
             }
             catch (OperationCanceledException) when (ctsTimeout.IsCancellationRequested)
             {
@@ -51,8 +51,11 @@ namespace BookSearchLib
                 return null;
             }
 
-            var json = await response.Content.ReadAsStringAsync(token);
-            var searchResult = JsonSerializer.Deserialize<SearchResponse>(json);
+            var json = await response.Content.ReadAsStringAsync();
+            var searchResult = JsonSerializer.Deserialize<SearchResponse>(json, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+            });
 
             if (searchResult?.Docs == null)
             {
@@ -86,7 +89,10 @@ namespace BookSearchLib
                 }
 
                 var workJson = await resp.Content.ReadAsStringAsync(token);
-                var workData = JsonSerializer.Deserialize<WorkResponse>(workJson);
+                var workData = JsonSerializer.Deserialize<WorkResponse>(workJson, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+                });
 
                 book.Description = workData?.Description?.ToString();
                 _logger.LogDebug("Set description for '{Title}' (Key: {Key})", book.Title, key);
