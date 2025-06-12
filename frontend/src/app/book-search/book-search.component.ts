@@ -1,105 +1,107 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule, HttpParams } from '@angular/common/http';
-import { BookResult, BookSearchResponse } from './book-search.model';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BookSearchService } from './book-search.service';
+import { BookResult } from './book-search.model';
 
 @Component({
   selector: 'app-book-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './book-search.component.html',
-  styleUrl: './book-search.component.scss'
+  styleUrls: ['./book-search.component.scss']
 })
 export class BookSearchComponent implements OnInit {
-  query = '';
+  searchForm: FormGroup;
   results: BookResult[] = [];
   expandedIndices = new Set<number>();
   isLoading = false;
   error: string | null = null;
+  noResults = false;
 
-  title = '';
-  author = '';
-  subject = '';
   offset = 0;
   limit = 10;
   totalResults = 0;
-  searchType = 'title'; // default
   hasMoreResults = false;
 
   toReadList: BookResult[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private fb: FormBuilder, private bookService: BookSearchService) {
+    this.searchForm = this.fb.group({
+      searchType: ['title'],
+      query: ['']
+    });
+  }
 
   ngOnInit() {
     this.loadToReadList();
   }
 
-  search() {
+  search(): void {
     this.offset = 0;
     this.results = [];
     this.fetchResults();
   }
 
-  loadMore() {
+  loadMore(): void {
     this.offset += this.limit;
     this.fetchResults();
   }
 
-  fetchResults() {
+  private fetchResults(): void {
+    const { query, searchType } = this.searchForm.value;
     this.isLoading = true;
     this.error = null;
+    this.noResults = false;
 
-    const params = new HttpParams()
-      .set(this.searchType, this.query)
-      .set('offset', this.offset)
-      .set('limit', this.limit);
-
-    this.http.get<BookSearchResponse>('http://localhost:5074/api/search', { params })
-      .subscribe({
-        next: (response) => {
+    this.bookService.search(query.trim(), searchType, this.offset, this.limit).subscribe({
+      next: (response) => {
+        if (!response.docs || response.docs.length === 0) {
+          this.noResults = true;
+        } else {
           this.results.push(...response.docs);
           this.totalResults = response.numFound;
           this.hasMoreResults = this.results.length < this.totalResults;
-          this.isLoading = false;
-        },
-        error: () => {
-          this.error = 'An error occurred while fetching results.';
-          this.isLoading = false;
         }
-      });
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.error = 'An error occurred while fetching results.';
+      }
+    });
   }
 
-  toggleExpand(index: number) {
-    if (this.expandedIndices.has(index)) {
-      this.expandedIndices.delete(index);
-    } else {
-      this.expandedIndices.add(index);
-    }
+  toggleExpand(index: number): void {
+    this.expandedIndices.has(index)
+      ? this.expandedIndices.delete(index)
+      : this.expandedIndices.add(index);
   }
 
   getCoverUrl(book: BookResult): string {
-    if (!book.key) return '';
-    return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+    return book.cover_i
+      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
+      : '';
   }
 
-  addToReadList(book: BookResult) {
-    if (!this.toReadList.find(b => b.key === book.key)) {
+  addToReadList(book: BookResult): void {
+    if (!this.toReadList.some((b) => b.key === book.key)) {
       this.toReadList.push(book);
       this.saveToReadList();
     }
   }
 
-  removeFromReadList(book: BookResult) {
-    this.toReadList = this.toReadList.filter(b => b.key !== book.key);
+  removeFromReadList(book: BookResult): void {
+    this.toReadList = this.toReadList.filter((b) => b.key !== book.key);
     this.saveToReadList();
   }
 
-  saveToReadList() {
+  private saveToReadList(): void {
     localStorage.setItem('toReadList', JSON.stringify(this.toReadList));
   }
 
-  loadToReadList() {
+  private loadToReadList(): void {
     const saved = localStorage.getItem('toReadList');
     if (saved) {
       this.toReadList = JSON.parse(saved);
@@ -107,6 +109,10 @@ export class BookSearchComponent implements OnInit {
   }
 
   isInToReadList(book: BookResult): boolean {
-    return this.toReadList.some(b => b.key === book.key);
+    return this.toReadList.some((b) => b.key === book.key);
+  }
+
+  trackByBookKey(index: number, book: BookResult): string {
+    return book.key ?? index.toString();
   }
 }

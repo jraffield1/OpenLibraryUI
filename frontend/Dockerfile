@@ -1,4 +1,3 @@
-# Stage 1: Build the app (install dependencies)
 FROM node:20
 
 WORKDIR /app
